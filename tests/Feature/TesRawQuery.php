@@ -44,4 +44,27 @@ class TesRawQuery extends TestCase
         self::assertEquals(1, count($result));
         self::assertEquals('Laptop', $result[0]->name);
     }
+
+    public function testDbTransaction()
+    {
+        DB::transaction(function () {
+            DB::insert("insert into categories(id, name, description, created_at) values(:id,:name,:description,:created_at)", [
+                'LAPTOP',
+                'Laptop',
+                'Laptop Category ku',
+                '2025-10-11 00:00:00'
+            ]);
+
+            DB::insert("insert into categories(id, name, description, created_at) values(:id,:name,:description,:created_at)", [
+                'HP',
+                'Samsung',
+                'HP Samsung',
+                '2025-10-11 00:00:00'
+            ]);
+        });
+
+        $result = DB::select("select * from categories");
+
+        self::assertEquals(2, count($result));
+    }
 }
