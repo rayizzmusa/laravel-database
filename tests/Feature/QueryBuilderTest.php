@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,48 @@ class QueryBuilderTest extends TestCase
         $collection = DB::table("categories")->select(['id', 'name'])->get();
         self::assertNotNull($collection);
 
+        $collection->each(function ($item) {
+            Log::info(json_encode($item));
+        });
+    }
+
+    public function insertCategories()
+    {
+        DB::table('categories')->insert([
+            'id' => 'LAPTOP',
+            'name' => 'Laptop',
+            'description' => 'Laptop Category'
+        ]);
+
+        DB::table('categories')->insert([
+            'id' => 'HP',
+            'name' => 'Hewlett Packard',
+            'description' => 'HP Category'
+        ]);
+
+        DB::table('categories')->insert([
+            'id' => 'ACER',
+            'name' => 'Acer',
+            'description' => 'Laptop Category'
+        ]);
+
+        DB::table('categories')->insert([
+            'id' => 'SAMSUNG',
+            'name' => 'Samsung',
+            'description' => 'HP Category'
+        ]);
+    }
+
+    public function testQueryBuilderWhere()
+    {
+        $this->insertCategories();
+
+        $collection = DB::table("categories")->where(function (Builder $builder) {
+            $builder->where('id', '=', 'LAPTOP');
+            $builder->orWhere('id', '=', 'HP');
+        })->get(['name', 'description']);
+
+        self::assertCount(2, $collection);
         $collection->each(function ($item) {
             Log::info(json_encode($item));
         });
