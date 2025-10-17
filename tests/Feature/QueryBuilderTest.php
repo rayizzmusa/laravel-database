@@ -89,4 +89,29 @@ class QueryBuilderTest extends TestCase
             Log::info(json_encode($item));
         });
     }
+
+    public function testWhereBetween()
+    {
+        $this->insertCategories();
+
+        $collection = DB::table("categories")
+            ->whereBetween('created_at', ['2025-10-17 00:00:00', '2025-10-17 23:59:59'])
+            ->get();
+        self::assertCount(4, $collection);
+        for ($i = 0; $i  < count($collection); $i++) {
+            Log::info(json_encode($collection[$i]));
+        }
+    }
+
+    public function testQueryBuilderWhereIn()
+    {
+        $this->insertCategories();
+
+        $collection = DB::table("categories")->whereIn('id', ['ACER', 'HP'])->get();
+
+        self::assertCount(2, $collection);
+        $collection->each(function ($item) {
+            Log::info(json_encode($item));
+        });
+    }
 }
