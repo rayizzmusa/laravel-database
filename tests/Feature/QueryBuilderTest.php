@@ -114,4 +114,16 @@ class QueryBuilderTest extends TestCase
             Log::info(json_encode($item));
         });
     }
+
+    public function testQueryBuilderWhereNull()
+    {
+        $this->insertCategories();
+
+        $collection = DB::table("categories")->whereNotNull('description')->get();
+
+        self::assertCount(4, $collection);
+        $collection->each(function ($item) {
+            Log::info(json_encode($item));
+        });
+    }
 }
