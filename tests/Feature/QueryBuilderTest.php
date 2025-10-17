@@ -126,4 +126,17 @@ class QueryBuilderTest extends TestCase
             Log::info(json_encode($item));
         });
     }
+
+    public function testQueryBuilderWhereDateMethod()
+    {
+        $this->insertCategories();
+
+        $collection1 = DB::table("categories")->whereDate('created_at', '2025-10-17')->get();
+        $collection2 = DB::table("categories")->whereDay('created_at', '17')->get();
+        $collection3 = DB::table("categories")->whereMonth('created_at', '10')->get();
+
+        self::assertCount(4, $collection1);
+        self::assertCount(4, $collection2);
+        self::assertCount(4, $collection3);
+    }
 }
