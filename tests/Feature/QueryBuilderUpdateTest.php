@@ -53,4 +53,22 @@ class QueryBuilderUpdateTest extends TestCase
             Log::channel('test1')->info(json_encode($item));
         });
     }
+
+    public function testQueriBuilderUpdateOrInsert()
+    {
+        $this->insertCategories();
+
+        DB::table("categories")->updateOrInsert([
+            'id' => 'Monitor'
+        ], [
+            'name' => 'MSI Monitor',
+            'description' => 'Monitor Category'
+        ]);
+
+        $collection = DB::table("categories")->where("id", "=", "Monitor")->get();
+        self::assertCount(1, $collection);
+        $collection->each(function ($item) {
+            Log::channel('test1')->info(json_encode($item));
+        });
+    }
 }
