@@ -79,4 +79,14 @@ class QueryBuilderUpdateTest extends TestCase
         $collection = DB::table("counters")->where("id", "=", "sample")->get();
         self::assertCount(1, $collection);
     }
+
+    public function testDeleteQueryBuilder()
+    {
+        $this->insertCategories();
+
+        DB::table("categories")->where("id", "=", "HP")->delete();
+
+        $collection = DB::table("categories")->where("id", "=", "HP")->get();
+        self::assertCount(0, $collection);
+    }
 }
