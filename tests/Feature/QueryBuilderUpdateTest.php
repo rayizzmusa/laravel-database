@@ -71,4 +71,12 @@ class QueryBuilderUpdateTest extends TestCase
             Log::channel('test1')->info(json_encode($item));
         });
     }
+
+    public function testIncrement()
+    {
+        DB::table("counters")->where("id", "=", "sample")->increment("counter", 1);
+
+        $collection = DB::table("counters")->where("id", "=", "sample")->get();
+        self::assertCount(1, $collection);
+    }
 }
