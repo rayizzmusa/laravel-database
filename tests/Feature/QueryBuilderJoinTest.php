@@ -29,6 +29,18 @@ class QueryBuilderJoinTest extends TestCase
             'name' => 'Samsung',
             'description' => 'HP Category'
         ]);
+
+        DB::table('categories')->insert([
+            'id' => 'SMART WATCH',
+            'name' => 'Mi',
+            'description' => 'SW Category'
+        ]);
+
+        DB::table('categories')->insert([
+            'id' => 'TAB',
+            'name' => 'Ipad',
+            'description' => 'TAB Category'
+        ]);
     }
 
     public function insertProducts()
@@ -66,6 +78,21 @@ class QueryBuilderJoinTest extends TestCase
 
         $collection = DB::table("products")
             ->orderBy("price", "desc")->get();
+
+        self::assertCount(2, $collection);
+        foreach ($collection as $item) {
+            Log::info(json_encode($item));
+        }
+    }
+
+    public function testPaging()
+    {
+        $this->insertCategories();
+
+        $collection = DB::table("categories")
+            ->skip(2) //untuk menskip data urutan 1 dan 2 (offset)
+            ->take(2) //mengambil urutan 3 dan 4 (limit)
+            ->get();
 
         self::assertCount(2, $collection);
         foreach ($collection as $item) {
