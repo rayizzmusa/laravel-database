@@ -113,4 +113,29 @@ class QueryBuilderJoinTest extends TestCase
                 }
             });
     }
+
+    public function insertManyCategories()
+    {
+        for ($i = 0; $i < 100; $i++) {
+            DB::table("categories")->insert([
+                "id" => "CATEGORY-$i",
+                "name" => "name $i"
+            ]);
+        }
+    }
+
+    public function testLazy()
+    {
+        //lazy ini lebih efisien drpd chunk karena datanya tdk akan diambil jika belum diminta untuk diambil
+        $this->insertManyCategories();
+
+        $collection = DB::table("categories")
+            ->orderBy("id")
+            ->lazy(10); //->take(3); take disini bawaan lazy untuk mengambil misal 3 data
+
+        self::assertNotNull($collection);
+        $collection->each(function ($item) {
+            Log::info(json_encode($item));
+        });
+    }
 }
