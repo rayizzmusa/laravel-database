@@ -99,4 +99,18 @@ class QueryBuilderJoinTest extends TestCase
             Log::info(json_encode($item));
         }
     }
+
+    public function testChunkResult()
+    {
+        $this->insertCategories();
+
+        DB::table("categories")
+            ->orderBy("id")
+            ->chunk(1, function ($categories) {
+                self::assertNotNull($categories);
+                foreach ($categories as $item) {
+                    Log::info(json_encode($item));
+                }
+            });
+    }
 }
