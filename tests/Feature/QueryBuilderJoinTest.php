@@ -124,7 +124,7 @@ class QueryBuilderJoinTest extends TestCase
         }
     }
 
-    public function testLazy()
+    public function testLazyResult()
     {
         //lazy ini lebih efisien drpd chunk karena datanya tdk akan diambil jika belum diminta untuk diambil
         $this->insertManyCategories();
@@ -134,6 +134,20 @@ class QueryBuilderJoinTest extends TestCase
             ->lazy(10); //->take(3); take disini bawaan lazy untuk mengambil misal 3 data
 
         self::assertNotNull($collection);
+        $collection->each(function ($item) {
+            Log::info(json_encode($item));
+        });
+    }
+
+    public function testCursorResult()
+    {
+        $this->insertManyCategories();
+
+        $collection = DB::table("categories")
+            ->orderBy("id")
+            ->cursor();
+        self::assertNotNull($collection);
+
         $collection->each(function ($item) {
             Log::info(json_encode($item));
         });
