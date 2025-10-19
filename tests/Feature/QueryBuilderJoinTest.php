@@ -65,7 +65,7 @@ class QueryBuilderJoinTest extends TestCase
         $this->insertProducts();
 
         $collection = DB::table("products")
-            ->orderBy("id", "asc")->get();
+            ->orderBy("price", "desc")->get();
 
         self::assertCount(2, $collection);
         foreach ($collection as $item) {
