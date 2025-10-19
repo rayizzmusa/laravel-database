@@ -96,4 +96,35 @@ class QueryBuilderAggregate extends TestCase
             Log::info(json_encode($item));
         });
     }
+
+    public function insertProductsLaptop()
+    {
+        $this->insertProducts();
+
+        DB::table("products")
+            ->insert(["id" => "3", "name" => "Acr i500", "category_id" => "LAPTOP", "price" => "4000000"]);
+        DB::table("products")
+            ->insert(["id" => "4", "name" => "Acr i600k", "category_id" => "LAPTOP", "price" => "5000000"]);
+    }
+
+    public function testQueryBuilderGrouping()
+    {
+        $this->insertProductsLaptop();
+
+        $collection = DB::table("products")
+            ->select("category_id", DB::raw("count(*) as total_product"))
+            ->groupBy("category_id")
+            ->orderBy("category_id", "desc")
+            ->get();
+
+        self::assertCount(2, $collection);
+        self::assertEquals("LAPTOP", $collection[0]->category_id);
+        self::assertEquals("HP", $collection[1]->category_id);
+        self::assertEquals(2, $collection[0]->total_product);
+        self::assertEquals(2, $collection[1]->total_product);
+
+        $collection->each(function ($item) {
+            Log::info(json_encode($item));
+        });
+    }
 }
