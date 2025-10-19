@@ -59,4 +59,17 @@ class QueryBuilderJoinTest extends TestCase
             Log::info(json_encode($item));
         }
     }
+
+    public function testQueryBuilderOrder()
+    {
+        $this->insertProducts();
+
+        $collection = DB::table("products")
+            ->orderBy("id", "asc")->get();
+
+        self::assertCount(2, $collection);
+        foreach ($collection as $item) {
+            Log::info(json_encode($item));
+        }
+    }
 }
