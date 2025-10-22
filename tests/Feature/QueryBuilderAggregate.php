@@ -127,4 +127,18 @@ class QueryBuilderAggregate extends TestCase
             Log::info(json_encode($item));
         });
     }
+
+    public function testQueryBuilderHaving()
+    {
+        $this->insertProductsLaptop();
+
+        $collection = DB::table("products")
+            ->select("category_id", DB::raw("count(*) as total_product"))
+            ->groupBy("category_id")
+            ->orderBy("category_id", "desc")
+            ->having(DB::raw("count(*)"), ">", 2)
+            ->get();
+
+        self::assertCount(0, $collection);
+    }
 }
