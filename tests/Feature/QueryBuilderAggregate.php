@@ -154,4 +154,41 @@ class QueryBuilderAggregate extends TestCase
             self::assertCount(1, $collection);
         });
     }
+
+    public function testPagination()
+    {
+        $this->insertProducts();
+
+        $paginate = DB::table("categories")->paginate(perPage: 2); // default page/halaman adalah ke 1 kalau page tidak ditentukan
+
+        self::assertEquals(1, $paginate->currentPage()); //page saat ini
+        self::assertEquals(2, $paginate->perPage()); // item per page
+        self::assertEquals(2, $paginate->lastPage()); // page terakhir
+        self::assertEquals(4, $paginate->total()); //total item
+
+        $collection = $paginate->items();
+        self::assertCount(2, $collection);
+        foreach ($collection as $item) {
+            Log::info(json_encode($item));
+        }
+    }
+
+    public function testIterasiPerpage()
+    {
+        $this->insertProductsLaptop();
+
+        $page = 1;
+        while (true) {
+            $paginate = DB::table("categories")->paginate(perPage: 2, page: $page);
+            if ($paginate->isEmpty()) {
+                break;
+            } else {
+                $page++;
+                foreach ($paginate->items() as $item) {
+                    self::assertNotNull($item);
+                    Log::info(json_encode($item));
+                }
+            }
+        }
+    }
 }
