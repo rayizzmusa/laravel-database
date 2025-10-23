@@ -9,6 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    // up ini untuk menjalankan
     public function up(): void
     {
         Schema::create('counter', function (Blueprint $table) {
@@ -20,6 +21,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
+    // up ini untuk menjalankan
     public function down(): void
     {
         Schema::dropIfExists('counter');
